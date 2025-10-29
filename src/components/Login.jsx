@@ -1,7 +1,9 @@
 import React, {useState} from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../Firebase/Firebase";
 
 
-const Login = () => {
+const Login = ({isLogin, setIsLogin}) => {
       const [userData, setUserData] = useState({ email: "", password: ""});
     
         const handleChangeUserData = (e) => {
@@ -15,7 +17,7 @@ const Login = () => {
     
         const handleAuth = async () => {
             try {
-                alert("Login Successful")
+                await signInWithEmailAndPassword(auth, userData?.email, userData?.password);
             } catch (error) {
                 console.log(error);
             }
@@ -35,7 +37,8 @@ const Login = () => {
                     <button onClick={handleAuth} className="bg-[#01aa85] text-white font-bold w-full p-2 rounded-md ">Login</button>
                 </div>
                 <div className="mt-5 text-center text-gray-400 text-sm">
-                    <button>Don't have an account yet, Sign Up</button>
+                    <button></button>
+                     <button onClick={() => setIsLogin(!isLogin)}>Don't have an account yet, Sign Up</button>
                 </div>
             </div>
         </section> 

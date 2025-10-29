@@ -1,7 +1,11 @@
 import React, {useState} from "react";
 
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import {auth, db} from "../Firebase/Firebase";
+import { doc, setDoc } from "firebase/firestore";
 
-const Register = () => {
+
+const Register = ({isLogin, setIsLogin}) => {
     const [userData, setUserData] = useState({fullName: "", email: "", password: ""});
 
     const handleChangeUserData = (e) => {
@@ -15,7 +19,19 @@ const Register = () => {
 
     const handleAuth = async () => {
         try {
-            alert("Registration Successful")
+            const userCredential = await createUserWithEmailAndPassword(auth, userData?.email, userData?.password);
+            const user = userCredential.user;
+
+            const userDocRef = doc(db, "users", user.uid)
+
+            await setDoc(userDocRef, {
+                uid: user.uid,
+                email: user.email,
+                username: user.email?.split("@")[0],
+                 usernameLower: user.email?.split("@")[0].toLowerCase(),
+                fullName: userData.fullName,
+                Image: "",
+            });
         } catch (error) {
             console.log(error);
         }
@@ -36,7 +52,7 @@ const Register = () => {
                     <button onClick={handleAuth} className="bg-[#01aa85] text-white font-bold w-full p-2 rounded-md ">Register</button>
                 </div>
                 <div className="mt-5 text-center text-gray-400 text-sm">
-                    <button>Already have an account? Sign In</button>
+                    <button onClick={() => setIsLogin(!isLogin)}>Already have an account? Sign In</button>
                 </div>
             </div>
         </section>
